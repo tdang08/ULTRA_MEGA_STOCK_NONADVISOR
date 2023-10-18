@@ -78,7 +78,9 @@ for current_row in dataframe.itertuples():
     else: labels.append(0)
     index_count = index_count + 1
     previous_row = current_row
-dataframe.insert(3, "label", labels, True)
+if 'label' in dataframe.columns:
+    dataframe['label'] = labels
+else: dataframe.insert(3, "label", labels, True)
 print(dataframe)
 
 # Calculate moving average from 20 days
@@ -129,7 +131,7 @@ for i in range(len(sma_buffer)):
 closing_prices = dataframe['close']
 bollinger_band_norm = []
 
-# Normalize band values to one vector
+# Normalize bollinger band values to one vector
 # If < 0, price is below band
 # If > 1, price is above band
 for i in range(len(closing_prices)):
@@ -141,4 +143,21 @@ for i in range(len(closing_prices)):
         bollinger_band_norm.append(0)
 
 dataframe.insert(4,'bb_normalized', bollinger_band_norm)
+
+
+# Calculate on-balance volume
+current_balance = 0
+previous_balance = 0
+
+obv = []
+
+for data in dataframe[['volume','close','label']].itertuples():
+    index,volume,close,label = data
+    if label == 0: current_balance = previous_balance + 0
+    elif label == 1: current_balance = previous_balance + volume
+    elif label == -1: current_balance = previous_balance - volume
+    previous_balance = current_balance
+    obv.append(current_balance)
+dataframe['obv'] = obv
+
 dataframe.to_csv('output.csv', index=False)
