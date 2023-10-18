@@ -146,6 +146,9 @@ dataframe.insert(4,'bb_normalized', bollinger_band_norm)
 
 
 # Calculate on-balance volume
+# This will tell us how much volume has accumulated for each closing day
+# If we see the slope as really high then, it's an indication that price will experience steep change
+# If slope is negative then price will dip. but who knows...
 current_balance = 0
 previous_balance = 0
 
@@ -157,7 +160,9 @@ for data in dataframe[['volume','close','label']].itertuples():
     elif label == 1: current_balance = previous_balance + volume
     elif label == -1: current_balance = previous_balance - volume
     previous_balance = current_balance
-    obv.append(current_balance)
-dataframe['obv'] = obv
+    # Normalize by using current volume as base
+    # The numbers get ridiculous!!
+    obv.append(current_balance/volume)
+dataframe['obv_norm'] = obv
 
-dataframe.to_csv('output.csv', index=False)
+dataframe.to_csv('output.csv')
