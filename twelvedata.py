@@ -62,7 +62,7 @@ dataframe = pd.read_csv('output100.csv')
 labels = []
 index_count = 0
 previous_row = 0
-dataframe.set_index('date')
+dataframe = dataframe.set_index('date')
 
 # calculate label for closing price change from day to day
 for current_row in dataframe.itertuples():
@@ -142,7 +142,7 @@ for i in range(len(closing_prices)):
     else:
         bollinger_band_norm.append(0)
 
-dataframe.insert(4,'bb_normalized', bollinger_band_norm)
+dataframe.insert(3,'bb_normalized', bollinger_band_norm)
 
 
 # Calculate on-balance volume
