@@ -151,14 +151,14 @@ def main():
 
     clf = RandomForestClassifier(random_state=0)
     # read from 22 onwards to ignore the initial data where moving average has yet to form
-    X = dataframe[['obv_norm', 'bb_normalized']][22:].to_numpy()
-    y = dataframe[['label']][22:].to_numpy()
+    X = dataframe[['obv_norm', 'bb_normalized']][22:-100].to_numpy()
+    y = dataframe[['label']][22:-100].to_numpy()
     clf.fit(X,y)
 
-    test_dataframe = pd.read_csv('msft_test.csv')
-    test_samples = test_dataframe[['obv_norm', 'bb_normalized']][22:].to_numpy()
-    expected_labels = test_dataframe[['label']][22:].to_numpy()
-    results = clf.predict(test_samples)
+    # test_dataframe = pd.read_csv('msft_test.csv')
+    # test_samples = test_dataframe[['obv_norm', 'bb_normalized']][22:].to_numpy()
+    expected_labels = dataframe[['label']][-100:].to_numpy()
+    results = clf.predict(dataframe[['obv_norm', 'bb_normalized']][-100:])
 
     print("results")
     print(results)
